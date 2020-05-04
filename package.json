@@ -9,8 +9,12 @@
   "author": "zeeebr",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "envalid": "^6.0.1",
     "express": "^4.17.1",
-    "sequelize": "^5.21.6"
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.0.3",
+    "sequelize": "^5.21.7"
   }
 }
