@@ -43,27 +43,39 @@ router.post('/registration', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
     let checkName = await user.getUser(req.body.email);
-    console.log(checkName)
-
+    
     if (!checkName) {
         const err = new Error(`User ${req.body.email} not found!`);
         err.status = 400;
         next(err);
-    } 
+    }
 
     if (!isValidPassword(checkName, req.body.password)) {
         const err = new Error(`Wrong password for user ${req.body.email}!`);
         err.status = 400;
         next(err);
-    } 
-    
+    }
+
+    let token = jwt.sign({
+        iss: 'zeeebr',
+        sub: 'auth'
+    }, checkName.password, {
+        expiresIn: 60 * 10
+    });
+
+    user.addToken([{
+        email: req.body.email,
+        token: token
+    }])
+
     res.json({
-        message: `User successfully sign in!`
+        message: `User successfully sign in!`,
+        token: token
     });
 })
 
 async function isValidPassword(user, password) {
     return await bcrypt.compareSync(password, user.password);
-} 
+}
 
 module.exports = router;

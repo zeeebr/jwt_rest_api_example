@@ -15,7 +15,8 @@ class User {
                 primaryKey: true,
                 unique: true
             },
-            password: Sequelize.STRING
+            password: Sequelize.STRING,
+            token: Sequelize.STRING
         }, {
             freezeTableName: true
         })
@@ -25,6 +26,17 @@ class User {
             await this.model.create(data);
         } catch (err) {
             console.log(err.message);
+        }
+        return true;
+    }
+    async addToken(data) {
+        try {
+            await this.model.bulkCreate(data, {
+                updateOnDuplicate: ["token"]
+            })
+            console.log('ok')
+        } catch (err) {
+            console.log(err.message)
         }
         return true;
     }
