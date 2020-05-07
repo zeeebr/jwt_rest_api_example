@@ -16,12 +16,12 @@ class User {
                 unique: true
             },
             password: Sequelize.STRING,
-            token: Sequelize.STRING
+            refreshToken: Sequelize.STRING
         }, {
             freezeTableName: true
         })
     }
-    async add(data) {
+    async addUser(data) {
         try {
             await this.model.create(data);
         } catch (err) {
@@ -32,9 +32,8 @@ class User {
     async addToken(data) {
         try {
             await this.model.bulkCreate(data, {
-                updateOnDuplicate: ["token"]
+                updateOnDuplicate: ["refreshToken"]
             })
-            console.log('ok')
         } catch (err) {
             console.log(err.message)
         }

@@ -6,6 +6,7 @@ const {
 const user = new User();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const env = require('../env.js');
 
 router.get('/', (req, res, next) => {
     res.json({
@@ -33,7 +34,7 @@ router.post('/registration', async (req, res, next) => {
         password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
     }
 
-    user.add(data);
+    user.addUser(data);
 
     res.json({
         message: `User ${data.email} successfully added!`
@@ -56,23 +57,61 @@ router.post('/login', async (req, res, next) => {
         next(err);
     }
 
-    let token = jwt.sign({
+    let aToken = jwt.sign({
         iss: 'zeeebr',
         sub: 'auth'
-    }, checkName.password, {
-        expiresIn: 60 * 10
+    }, env.SECRET_KEY, {
+        expiresIn: '1h'
+    });
+
+    let rToken = jwt.sign({
+        iss: 'zeeebr',
+        sub: 'rfr'
+    }, env.SECRET_KEY, {
+        expiresIn: '30d'
     });
 
     user.addToken([{
         email: req.body.email,
-        token: token
+        refreshToken: rToken
     }])
 
     res.json({
         message: `User successfully sign in!`,
-        token: token
+        access_token: aToken,
+        refresh_token: rToken
     });
 })
+
+router.get('/secret', auth, (req, res) => {
+    res.json({
+        message: 'Secret page! :)'
+    })
+})
+
+function auth(req, res, next) {
+    let token = req.headers.authorization;
+
+    if (token.startsWith("Bearer ")){
+        token = token.substring(7, token.length);
+    } else {
+        const err = new Error('missing token');
+        err.status = 401;
+        next(err);
+    }
+    
+    let decoded = jwt.verify(token, env.SECRET_KEY);
+
+    console.log(decoded)
+    
+    if(!decoded) {
+        const err = new Error('wrong token');
+        err.status = 401;
+        next(err);
+    } else {
+        next()
+    }
+}
 
 async function isValidPassword(user, password) {
     return await bcrypt.compareSync(password, user.password);

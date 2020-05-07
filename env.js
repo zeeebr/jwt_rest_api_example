@@ -7,7 +7,8 @@ const main = envalid.cleanEnv(process.env, {
     DB_USER:            str(),
     DB_PASSWORD:        str(),
     DB_HOST:            str(),
-    PORT:               port()
+    PORT:               port(),
+    SECRET_KEY:         str()
 })
 
 module.exports = main;
