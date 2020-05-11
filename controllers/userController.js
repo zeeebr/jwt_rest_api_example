@@ -43,23 +43,25 @@ exports.login = async (req, res, next) => {
         next(err);
     }
 
-    if (!isValidPassword(checkName, req.body.password)) {
+    let isValidPassword = await bcrypt.compareSync(req.body.password, checkName.password);
+
+    if (!isValidPassword) {
         const err = new Error(`Wrong password for user ${req.body.email}!`);
         err.status = 400;
         next(err);
     }
 
     let aToken = jwt.sign({
-        iss: 'zeeebr',
-        sub: 'auth',
+        iss: 'jwt_rest_api_example',
+        sub: 'access',
         email: req.body.email
     }, env.SECRET_KEY, {
         expiresIn: '1h'
     });
 
     let rToken = jwt.sign({
-        iss: 'zeeebr',
-        sub: 'rfr',
+        iss: 'jwt_rest_api_example',
+        sub: 'refresh',
         email: req.body.email
     }, env.SECRET_KEY, {
         expiresIn: '30d'
@@ -75,12 +77,6 @@ exports.login = async (req, res, next) => {
         access_token: aToken,
         refresh_token: rToken
     });
-}
-
-exports.secret = auth, (req, res) => {
-    res.json({
-        message: 'Secret page! :)'
-    })
 }
 
 exports.refresh = async (req, res, next) => {
@@ -109,16 +105,16 @@ exports.refresh = async (req, res, next) => {
             next(err);
         } else {
             let aToken = jwt.sign({
-                iss: 'zeeebr',
-                sub: 'auth',
+                iss: 'jwt_rest_api_example',
+                sub: 'access',
                 email: decoded.email
             }, env.SECRET_KEY, {
                 expiresIn: '1h'
             });
         
             let rToken = jwt.sign({
-                iss: 'zeeebr',
-                sub: 'rfr',
+                iss: 'jwt_rest_api_example',
+                sub: 'refresh',
                 email: decoded.email
             }, env.SECRET_KEY, {
                 expiresIn: '30d'
@@ -135,31 +131,24 @@ exports.refresh = async (req, res, next) => {
                 refresh_token: rToken
             });
         }
-    })   
-}
-
-function auth(req, res, next) {
-    let token = req.headers.authorization;
-
-    if (token.startsWith('Bearer ')) {
-        token = token.substring(7, token.length);
-    } else {
-        const err = new Error('missing token');
-        err.status = 401;
-        next(err);
-    }
-
-    jwt.verify(token, env.SECRET_KEY, function (error, decoded) {
-        if (!decoded) {
-            const err = new Error(error.message);
-            err.status = 401;
-            next(err);
-        } else {
-            next()
-        }
     })
 }
 
-async function isValidPassword(user, password) {
-    return await bcrypt.compareSync(password, user.password);
+exports.secret = (req, res) => {
+    res.json({
+        message: 'Secret page! :)'
+    })
+    //res.redirect('/secret_page')
+}
+
+exports.logout = (req, res) => {
+    user.addToken([{
+        email: req.body.email,
+        refreshToken: undefined
+    }])
+
+    res.json({
+        message: 'You are logout!'
+    })
+    // тут ещё будет респонс об удалениие токенов у клиента, пока не смотрел как это на фронте реализуется
 }
