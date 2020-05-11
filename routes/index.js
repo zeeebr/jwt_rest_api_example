@@ -7,7 +7,6 @@ const user = new User();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const env = require('../env.js');
-
 router.get('/', (req, res, next) => {
     res.json({
         message: 'Welcome to jwt_rest_api_example!'
@@ -92,7 +91,7 @@ router.get('/secret', auth, (req, res) => {
 function auth(req, res, next) {
     let token = req.headers.authorization;
 
-    if (token.startsWith("Bearer ")){
+    if (token.startsWith('Bearer ')){
         token = token.substring(7, token.length);
     } else {
         const err = new Error('missing token');
@@ -100,17 +99,15 @@ function auth(req, res, next) {
         next(err);
     }
     
-    let decoded = jwt.verify(token, env.SECRET_KEY);
-
-    console.log(decoded)
-    
-    if(!decoded) {
-        const err = new Error('wrong token');
-        err.status = 401;
-        next(err);
-    } else {
-        next()
-    }
+    jwt.verify(token, env.SECRET_KEY, function(error, decoded){
+        if (!decoded) {
+            const err = new Error(error.message);
+            err.status = 401;
+            next(err);
+        } else {
+            next()
+        }
+    })
 }
 
 async function isValidPassword(user, password) {
