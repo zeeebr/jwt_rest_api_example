@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const env = require('./env.js');
 const router = require('./routes');
+const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use('/', router);
+
+app.use('/users', usersRouter);
 
 app.use((req, res, next) => {
     const err = new Error('Not Found!');
