@@ -3,8 +3,14 @@ const bodyParser = require('body-parser');
 const env = require('./env.js');
 const router = require('./routes');
 const usersRouter = require('./routes/users');
+const {
+    User
+} = require('./models/db');
+const user = new User();
 
 const app = express();
+
+user.sync()
 
 app.use(bodyParser.urlencoded({
     extended: true
@@ -36,6 +42,7 @@ app.use((err, req, res, next) => {
     })
 })
 
-app.listen(env.PORT, () => {
+app.listen(env.PORT, async () => {
+    await 
     console.log(`App listening on port ${env.PORT}`);
 });

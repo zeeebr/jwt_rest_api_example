@@ -48,9 +48,7 @@ class User {
         })
     }
     sync() {
-        return this.model.sync({
-            force: true
-        })
+        return this.model.sync({force: true})
     }
 }
 
