@@ -4,9 +4,14 @@
 
 # Installation
   - Clone the repository by using `git clone`.
-  - Run `npm install` on the cloned directory.
-  - Create `.env` file following the example from `/.env.example`
-  - Create PostgreSQL database and user with data as in a `.env` file
+  - Run `npm install` in the cloned directory.
+  - Adding variables to your environment:
+      - `DB_NAME=your_db_mame`
+      - `DB_USER=your_postgres_user`
+      - `DB_PASSWORD=your_password`
+      - `DB_HOST=your_host`
+      - `PORT=your_port_number`
+      - `SECRET_KEY=your_secret_key`
 
 # How to Run
 ```
@@ -18,9 +23,23 @@ I would recommend using at the `pm2` for running on a production server.
 - **/user/registration** : 
     - Method: **POST**
       - Description: Create a new user.
-      - Body: email, password.
-
-   
+      - Body: email, password, repeatPassword.
+- **/user/login** :
+    - Method: **POST**
+      -  Description: Getting access and reresh tokens.
+      -  Body: email, password.
+- **/user/login** :
+    - Method: **PUT**
+      -  Description: Update access and reresh tokens.
+      -  Authorization: Bearer *refresh_token*.
+- **/user/secret** :
+    - Method: **GET**
+      -  Description: Entrance to the secret page.
+      -  Authorization: Bearer *access_token*.
+- **/user/logout** :
+    - Method: **GET**
+      -  Description: Logout and removing tokens.
+      -  Authorization: Bearer *access_token*.
 
 License
 ----

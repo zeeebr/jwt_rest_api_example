@@ -126,7 +126,7 @@ exports.refresh = async (req, res, next) => {
             }])
         
             res.json({
-                message: `User successfully sign in!`,
+                message: `Here are your new tokens!`,
                 access_token: aToken,
                 refresh_token: rToken
             });
@@ -150,5 +150,4 @@ exports.logout = (req, res) => {
     res.json({
         message: 'You are logout!'
     })
-    // тут ещё будет респонс об удалениие токенов у клиента, пока не смотрел как это на фронте реализуется
 }

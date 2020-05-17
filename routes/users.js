@@ -8,11 +8,11 @@ router.post('/registration', user_controller.registration);
 
 router.post('/login', user_controller.login);
 
-router.get('/login/refresh', user_controller.refresh);
+router.put('/login', user_controller.refresh);
 
 router.get('/secret', auth, user_controller.secret);
 
-router.get('/logout', auth, user_controller.logout)
+router.get('/logout', auth, user_controller.logout);
 
 
 module.exports = router;
