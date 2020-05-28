@@ -73,7 +73,6 @@ exports.login = async (req, res, next) => {
     }])
 
     res.json({
-        message: `User successfully sign in!`,
         access_token: aToken,
         refresh_token: rToken
     });

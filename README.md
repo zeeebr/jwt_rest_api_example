@@ -15,9 +15,12 @@
 
 # How to Run
 ```
+pm2 start app.js
+```
+or
+```
 node app.js
 ```
-I would recommend using at the `pm2` for running on a production server.
 
 ## Endpoints
 - **/user/registration** : 
